@@ -19,6 +19,7 @@ const signIn = async (provider, formData, setIsLoggedIn, navigate) => {
     setTimeout(() => {
       const email = formData?.get("email");
       const password = formData?.get("password");
+      
       // Simulating successful login
       resolve({
         type: "CredentialsSignin",

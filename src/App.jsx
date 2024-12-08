@@ -7,10 +7,11 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState } from "react";
+import MediaCard from "./components/DepartmentSelect.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  // return <MediaCard />;
   return (
     <Router>
       <Routes>
