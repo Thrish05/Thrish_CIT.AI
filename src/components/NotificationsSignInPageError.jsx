@@ -25,9 +25,9 @@ const signIn = async (provider, formData, setIsLoggedIn, navigate) => {
         type: "CredentialsSignin",
         error: "Invalid credentials.", // Simulate invalid credentials for now
       });
-      // Once the user is "logged in", update the state and navig ate to /dashboard
+      // Once the user is "logged in", update the state and navigate to /dashboard
       setIsLoggedIn(true);
-      navigate("/dashboard"); // Redirect to dashboard
+      navigate("/select-department"); // Redirect to dashboard
     }, 300);
   });
   return promise;

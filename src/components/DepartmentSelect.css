@@ -1,0 +1,38 @@
+/* DepartmentSelect.css */
+
+/* Apply dark background to the entire body */
+body {
+  background-color: #121212; /* Dark background color for the body */
+  color: white; /* Optional: Ensure text is white in dark mode */
+  margin: 0;
+  padding: 0;
+}
+
+/* Styling for the card container */
+.card-family {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding-left: 45px;
+  padding-top: 20px; /* Optional: Add padding for spacing */
+  padding-right: 20px;
+  background-color: #121212; /* Dark background for the container */
+  min-height: 100vh; /* Ensure the container takes up full height */
+}
+
+/* DepartmentSelect.css */
+
+/* Styling for the continue button container */
+.continue-button-container {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Space between last card and button */
+}
+
+/* Optional: Additional styling for the button if needed */
+.continue-button-container button {
+  padding: 12px 20px;
+  font-size: 16px;
+}

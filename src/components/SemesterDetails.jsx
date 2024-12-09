@@ -64,6 +64,7 @@ const SemesterDetails = () => {
           <Button variant="contained" color="success">
             Submit
           </Button>
+          
         </div>
       </form>
     </div>

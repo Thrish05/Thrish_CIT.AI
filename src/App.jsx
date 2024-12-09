@@ -11,7 +11,6 @@ import MediaCard from "./components/DepartmentSelect.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // return <MediaCard />;
   return (
     <Router>
       <Routes>
@@ -23,11 +22,11 @@ function App() {
           }
         />
 
-        {/* Dashboard route */}
         <Route
-          path="/dashboard"
-          element={isLoggedIn ? <DashBoard /> : <Navigate to="/" replace />}
+          path="/select-department"
+          element={isLoggedIn ? <MediaCard /> : <Navigate to="/" replace />}
         />
+        <Route path="/dashboard" element={<DashBoard />} />
       </Routes>
     </Router>
   );
