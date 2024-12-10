@@ -1,6 +1,6 @@
 import * as React from "react";
-import { AppProvider } from "@toolpad/core/AppProvider";
-import { SignInPage } from "@toolpad/core/SignInPage";
+import { AppProvider } from "@toolpad/studio-runtime";
+import { SignInPage } from "@toolpad/studio-runtime";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { Snackbar, Alert } from "@mui/material"; // Import MUI components for error message
