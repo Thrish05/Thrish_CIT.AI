@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import SideBar from "./SideBar.jsx";
@@ -7,24 +6,42 @@ import MainContent from "./MainContent.jsx";
 import "./DashBoard.css";
 
 function DashBoard() {
-  // State to track the selected semester
-  const [selectedSemester, setSelectedSemester] = useState(null);
+  const [selectedSemester, setSelectedSemester] = useState("1"); // Default semester
+  const [courseData, setCourseData] = useState({
+    // Initialize an empty object for all semesters
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": [],
+    "7": [],
+    "8": [],
+  });
 
-  // Retrieve Regulation value from the state passed via navigation
   const location = useLocation();
   const { rd } = location.state || {}; // Extract Regulation from state (if available)
-  // Function to handle the semester selection from the Sidebar
+
   const handleSemesterSelect = (semester) => {
     setSelectedSemester(semester); // Update the selected semester state
+  };
+
+  const updateCoursesForSemester = (semester, updatedCourses) => {
+    setCourseData((prevData) => ({
+      ...prevData,
+      [semester]: updatedCourses, // Update only the selected semester's course data
+    }));
   };
 
   return (
     <div className="app-container">
       <Header />
       <div className="layout">
-        <SideBar onSelectSemester={handleSemesterSelect} /> {/* Pass the function to Sidebar */}
+        <SideBar onSelectSemester={handleSemesterSelect} />
         <MainContent
           selectedSemester={selectedSemester}
+          courseData={courseData}
+          onCourseDataChange={updateCoursesForSemester}
           rd={rd} // Pass Regulation to MainContent
         />
       </div>

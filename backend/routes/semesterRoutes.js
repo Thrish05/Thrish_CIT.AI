@@ -4,9 +4,6 @@ import pool from "../config/db.js";
 const router = express.Router();
 
 // Insert or update course details
-// Insert or update course details
-// Insert or update course details
-// Insert or update course details
 router.post("/semester-details", async (req, res) => {
   console.log("Received data:", req.body);
   const { courses } = req.body;
@@ -26,7 +23,7 @@ router.post("/semester-details", async (req, res) => {
         category = EXCLUDED.category,
         tp = EXCLUDED.tp,
         gate_common = EXCLUDED.gate_common,
-        common_dept = EXCLUDED.common_dept,
+        common_dept = EXCLUDED.common_dept::text[],  // Assuming it's an array
         credits = EXCLUDED.credits,
         ltp = EXCLUDED.ltp
     `;
@@ -52,19 +49,17 @@ router.post("/semester-details", async (req, res) => {
 
     res.status(200).send({ message: "Courses successfully inserted or updated!" });
   } catch (error) {
-    console.error("Error inserting/updating courses:", error);
+    console.error("Error inserting/updating courses:", error.message);
     res.status(500).send({ message: "Error inserting/updating courses." });
   }
 });
-
-
-
 
 // Fetch course details
 router.get("/semester-details", async (req, res) => {
   const { department, regulation, sno, semester } = req.query;
 
   if (!department || !regulation) {
+    console.log("Missing required query parameters: department or regulation");
     return res.status(400).send("Missing required query parameters");
   }
 
@@ -79,6 +74,8 @@ router.get("/semester-details", async (req, res) => {
     if (semester) {
       query += " AND semester = $3";
       values.push(semester);
+    } else {
+      console.log("No semester specified, fetching all semesters.");
     }
 
     if (sno) {
@@ -91,10 +88,10 @@ router.get("/semester-details", async (req, res) => {
     if (rows.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).send({ message: "No records found" });
+      res.status(200).json([]);  // Return an empty array instead of 404
     }
   } catch (error) {
-    console.error("Error fetching records:", error);
+    console.error("Error fetching records:", error.message);
     res.status(500).send({ message: "Error fetching records" });
   }
 });

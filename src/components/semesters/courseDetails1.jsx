@@ -11,26 +11,28 @@ const CourseDetails = ({ department, regulation }) => {
   const [dropdownOpen, setDropdownOpen] = useState({}); // Object to track each dropdown state
 
   const departments = [
-    "CSE",
-    "AIML",
-    "AIDS",
-    "IT",
-    "CSBS",
-    "CYS",
-    "ECE",
-    "EEE",
-    "ACT",
-    "VLSI",
-    "MECH",
-    "MCT",
-    "CIVIL",
-    "BIOMED",
+    "CSE", "AIML", "AIDS", "IT", "CSBS", "CYS", "ECE", "EEE", "ACT", "VLSI", "MECH", "MCT", "CIVIL", "BIOMED",
   ];
+
+  // This will store the courses in localStorage under the key `courses-semester-{semester}`
+  const getStoredCourses = () => {
+    const storedCourses = localStorage.getItem(`courses-semester-${semester}`);
+    return storedCourses ? JSON.parse(storedCourses) : null;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
+      const storedCourses = getStoredCourses();
+
+      // If data is available in localStorage, load it; else, fetch from the server
+      if (storedCourses) {
+        setCourses(storedCourses);
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await fetch(
           `http://localhost:5000/semester-details?department=${department}&regulation=${regulation}&semester=${semester}`
@@ -130,6 +132,8 @@ const CourseDetails = ({ department, regulation }) => {
     const updatedCourses = [...courses];
     updatedCourses[index][field] = value;
     setCourses(updatedCourses);
+    // Store the updated courses in localStorage immediately
+    localStorage.setItem(`courses-semester-${semester}`, JSON.stringify(updatedCourses));
   };
 
   const handleSubmit = async (e) => {
@@ -150,6 +154,8 @@ const CourseDetails = ({ department, regulation }) => {
 
       if (response.ok) {
         alert("Courses submitted successfully!");
+        // Clear the stored courses after successful submission
+        localStorage.removeItem(`courses-semester-${semester}`);
       } else {
         alert("Failed to submit courses.");
       }
@@ -165,6 +171,8 @@ const CourseDetails = ({ department, regulation }) => {
       ? currentDepartments.filter((d) => d !== department)
       : [...currentDepartments, department];
     setCourses(updatedCourses);
+    // Store the updated courses in localStorage immediately
+    localStorage.setItem(`courses-semester-${semester}`, JSON.stringify(updatedCourses));
   };
 
   const toggleDropdown = (index) => {

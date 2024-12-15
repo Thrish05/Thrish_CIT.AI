@@ -19,9 +19,9 @@ app.use("/", semesterRoutes);
 // eslint-disable-next-line no-unused-vars
 const pool = new Pool({
   host: "localhost",
-  user: "dinesh",
-  password: "dinesh123",
-  database: "dinesh",
+  user: "postgres",
+  password: "pikachu@77",
+  database: "newDB",
   port: 5432,
 });
 

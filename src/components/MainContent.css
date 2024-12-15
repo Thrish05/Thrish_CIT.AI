@@ -1,4 +1,4 @@
-.main-content {
+.main_content {
   flex: 1;
   padding: 20px;
   display: flex;
@@ -6,7 +6,7 @@
   align-items: center;
   background-color: #121212;
 }
-
+/* 
 .buttons {
   display: flex;
   gap: 10px;
@@ -38,7 +38,7 @@
 
 .submit-btn:hover {
   background-color: #66bb6a;
-}
+} */
 
 .welcome-msg
 {
