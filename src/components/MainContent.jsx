@@ -76,8 +76,6 @@ const MainContent = ({ selectedSemester, rd }) => {
         return <CourseDetails7 {...commonProps} courses={semesterCourses["7"]} />;
       case "8":
         return <CourseDetails8 {...commonProps} courses={semesterCourses["8"]} />;
-      case "9":
-        return 
       default:
         return <div className="welcome-msg">Select a semester to add course details</div>;
     }

@@ -3,6 +3,17 @@ import pool from "../config/db.js";
 
 const router = express.Router();
 
+const categoryMapping = {
+  HSMC: 'Humanities & Social Science Courses (HSMC)',
+  BSC: 'Basic Science Courses (BSC)',
+  ESC: 'Engineering Science Courses (ESC)',
+  PCC: 'Program Core Courses (PCC)',
+  PEC: 'Professional Elective Courses (PEC)',
+  OEC: 'Open Elective Courses (OEC)',
+  EEC: 'Employability Enhancement Courses (EEC)',
+  MC: 'Mandatory Courses (MC)',
+};
+
 // Insert or update course details
 router.post("/semester-details", async (req, res) => {
   console.log("Received data:", req.body);
@@ -23,7 +34,7 @@ router.post("/semester-details", async (req, res) => {
         category = EXCLUDED.category,
         tp = EXCLUDED.tp,
         gate_common = EXCLUDED.gate_common,
-        common_dept = EXCLUDED.common_dept::text[],  // Assuming it's an array
+        common_dept = EXCLUDED.common_dept::text[],
         credits = EXCLUDED.credits,
         ltp = EXCLUDED.ltp
     `;
@@ -47,7 +58,9 @@ router.post("/semester-details", async (req, res) => {
       ]);
     }
 
-    res.status(200).send({ message: "Courses successfully inserted or updated!" });
+    await recalculateCredits(courses[0].department, courses[0].regulation, courses[0].semester);
+
+    res.status(200).send({ message: "Courses successfully inserted or updated and credits recalculated!" });
   } catch (error) {
     console.error("Error inserting/updating courses:", error.message);
     res.status(500).send({ message: "Error inserting/updating courses." });
@@ -95,5 +108,42 @@ router.get("/semester-details", async (req, res) => {
     res.status(500).send({ message: "Error fetching records" });
   }
 });
+
+async function recalculateCredits(department, regulation, semester) {
+  try {
+    const creditQuery = `
+      SELECT category, SUM(credits) AS total_credits
+      FROM courses
+      WHERE department = $1 AND regulation = $2 AND semester = $3
+      GROUP BY category
+    `;
+    const creditResult = await pool.query(creditQuery, [department, regulation, semester]);
+
+    const categoryCredits = creditResult.rows;
+
+    const regulationTable = regulation.toLowerCase(); // Assuming regulation table names are in lowercase (e.g., 'r21', 'r22')
+
+    for (let categoryData of categoryCredits) {
+      let { category, total_credits } = categoryData;
+
+      // Map short category names to full category names using the categoryMapping
+      const fullCategory = categoryMapping[category] || category; // Default to provided category if no mapping exists
+
+      const queryUpdateCategoryCredits = `
+        INSERT INTO ${regulationTable} (department, semester, category, credits)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (department, semester, category)
+        DO UPDATE SET credits = $4;
+      `;
+      const valuesUpdateCategoryCredits = [department, semester, fullCategory, total_credits];
+
+      await pool.query(queryUpdateCategoryCredits, valuesUpdateCategoryCredits);
+    }
+
+    console.log("Credits successfully recalculated and updated in the regulation table.");
+  } catch (error) {
+    console.error("Error recalculating and updating credits:", error);
+  }
+}
 
 export default router;

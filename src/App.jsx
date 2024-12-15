@@ -1,5 +1,6 @@
 import DashBoard from "./components/DashBoard.jsx";
 import NotificationsSignInPageError from "./components/NotificationsSignInPageError.jsx";
+import CreditsPieChart from "./components/CreditsPieChart.jsx";
 import {
   BrowserRouter as Router,
   Routes,
@@ -29,6 +30,7 @@ function App() {
           }
         />
         <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/chart" element={<CreditsPieChart />} />
       </Routes>
     </Router>
   );
