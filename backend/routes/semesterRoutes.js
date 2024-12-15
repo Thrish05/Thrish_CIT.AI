@@ -111,6 +111,15 @@ router.get("/semester-details", async (req, res) => {
 
 async function recalculateCredits(department, regulation, semester) {
   try {
+    // Reset all credit values for the current semester to 0
+    const regulationTable = regulation.toLowerCase(); // Assuming regulation table names are in lowercase
+    const resetCreditsQuery = `
+      UPDATE ${regulationTable}
+      SET credits = 0
+      WHERE department = $1 AND semester = $2;
+    `;
+    await pool.query(resetCreditsQuery, [department, semester]);
+
     const creditQuery = `
       SELECT category, SUM(credits) AS total_credits
       FROM courses
@@ -120,8 +129,6 @@ async function recalculateCredits(department, regulation, semester) {
     const creditResult = await pool.query(creditQuery, [department, regulation, semester]);
 
     const categoryCredits = creditResult.rows;
-
-    const regulationTable = regulation.toLowerCase(); // Assuming regulation table names are in lowercase (e.g., 'r21', 'r22')
 
     for (let categoryData of categoryCredits) {
       let { category, total_credits } = categoryData;
